@@ -1,0 +1,68 @@
+
+
+    input  wire       CLK100MHZ,
+
+    input  wire       BTNC,
+    input  wire       BTNU,
+    input  wire       BTND,
+
+    input  wire [7:0] SW,
+
+    output wire [7:0] LED
+);
+
+    wire [7:0] dout;
+
+    wire full;
+    wire empty;
+    wire almost_full;
+    wire almost_empty;
+
+    wire [4:0] count;
+
+
+    sync_fifo #(
+        .DATA_WIDTH(8),
+        .DEPTH(16)
+    ) fifo_inst (
+
+        .clk(CLK100MHZ),
+
+        .rst(BTNC),
+
+        .wr_en(BTNU),
+
+        .rd_en(BTND),
+
+        .din(SW),
+
+        .dout(dout),
+
+        .full(full),
+
+        .empty(empty),
+
+        .almost_full(almost_full),
+
+        .almost_empty(almost_empty),
+
+        .count(count)
+    );
+
+
+    // FIFO STATUS
+
+    assign LED[0] = empty;
+
+    assign LED[1] = full;
+
+    assign LED[2] = almost_empty;
+
+    assign LED[3] = almost_full;
+
+
+    // Display lower 4 bits of read data
+
+    assign LED[7:4] = dout[3:0];
+
+endmodule    
